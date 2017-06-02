@@ -21,22 +21,79 @@ import static org.junit.Assert.*;
  */
 public class MainActivityTest {
     @Test
-    public void test() throws Exception {
-//        Matrix t = readFile("D:\\桌面文件\\桌面\\毕业设计\\数据\\羊远灿\\完整-0.05\\NormalData1.txt");
-        /*Matrix m = readFile("D:\\桌面文件\\桌面\\毕业设计\\数据\\羊远灿\\1\\NormalData.txt");
-        */
-        //Matrix t = new Matrix(new double[][]{{1,1,1},{2,2,2},{3,3,3},{4,4,4},{3,3,3},{2,2,2},{2,2,2},{1,1,1}});
-/*        MainActivity mainActivity = new MainActivity();
-        Matrix cutMatrix = mainActivity.cut(t,-0.05);
-        cutMatrix.print(cutMatrix.getRowDimension(),cutMatrix.getColumnDimension());*/
-        int times = 0;
-        for(int i = 1; i <= 5; i++){
-            for(int j = 1; j < i; j++){
-                times++;
+    public void testFRR() throws Exception {
+        String[] name = {"羊远灿", "张尚斌","张劲松","闫玉亮","张亚浩","杨友钊"};
+        for (int i = 0; i < name.length; i++){
+
+            Matrix[] mode = new Matrix[5];
+            for(int j = 1; j <= 5; j++){
+                String fileName = "D:\\桌面文件\\桌面\\毕业设计\\数据\\25\\"+name[i]+"\\Raw_"+j+".txt";
+                mode[j-1] = readFile(fileName);
             }
+
+            int modelNumer = 5;
+            int smoothPeriod = 4;
+            double subLimite = 0.05;
+            double judgeLimite = 1.3  ; //自己在0.7~0.9 他人在1.3~,不要在1以内，否则或产生收敛现象。
+            HandSafe handSafe = new HandSafe(modelNumer,smoothPeriod,subLimite,judgeLimite);
+
+            handSafe.ModelRegister(mode);
+
+            Matrix test;
+            int k = 0;
+            for (int j = 6; j <= 25; j++){
+                String fileName = "D:\\桌面文件\\桌面\\毕业设计\\数据\\25\\"+name[i]+"\\Raw_"+j+".txt";
+                //System.out.println(fileName);
+                test = readFile(fileName);
+                if(!handSafe.judge(test)){
+                    k++;
+                }
+            }
+            System.out.println(name[i]+"-"+k);
         }
-        System.out.println(Integer.toString(times));
     }
+
+    @Test
+    public void testFAR() {
+        String[] name = {"羊远灿", "张尚斌", "张劲松", "闫玉亮", "张亚浩", "杨友钊"};
+        for (int i = 0; i < name.length; i++) {
+
+            //读取模版数据
+            Matrix[] mode = new Matrix[5];
+            for (int j = 1; j <= 5; j++) {
+                String modeFileName = "D:\\桌面文件\\桌面\\毕业设计\\数据\\25\\" + name[i] + "\\Raw_" + j + ".txt";
+                mode[j - 1] = readFile(modeFileName);
+            }
+            int modelNumer = 5;
+            int smoothPeriod = 4;
+            double subLimite = 0.05;
+            double judgeLimite = 1.2; //自己在0.7~0.9 他人在1.3~,不要在1以内，否则或产生收敛现象。
+            HandSafe handSafe = new HandSafe(modelNumer,smoothPeriod,subLimite,judgeLimite);
+
+            handSafe.ModelRegister(mode);
+            int times = 0;
+            for (int j = 0; j < name.length; j++){
+                if (j == i)
+                {
+                    continue;
+                }else{
+                    for (int k = 1; k <= 25; k++)
+                    {
+                        String testFileName = "D:\\桌面文件\\桌面\\毕业设计\\数据\\25\\" + name[j] + "\\Raw_" + k + ".txt";
+                        Matrix testM = readFile(testFileName);
+                        if(handSafe.judge(testM)){
+                            times++;
+                        }
+                    }
+                }
+            }
+            System.out.println(name[i]+"-"+times);
+
+        }
+
+    }
+
+
 
     public Matrix readFile(String filePath){
         File file = new File(filePath);
@@ -47,7 +104,7 @@ public class MainActivityTest {
                 String lineTxt = null;
                 ArrayList<double[]> list = new ArrayList<double[]>();
                 while ((lineTxt = bufferedReader.readLine()) != null){
-                    String[] line = lineTxt.split(",",3);
+                    String[] line = lineTxt.split(" ",3);
                     list.add(new double[]{Double.parseDouble(line[0]),Double.parseDouble(line[1]),Double.parseDouble(line[2])});
                 }
                 double[][] res = new double[list.size()][3];

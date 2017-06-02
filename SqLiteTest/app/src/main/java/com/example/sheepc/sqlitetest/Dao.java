@@ -11,6 +11,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import Jama.Matrix;
+
 /**
  * Created by sheepc on 2017/2/28.
  */
@@ -22,7 +24,7 @@ public class Dao extends SQLiteOpenHelper {
         super(context, name, factory, version);
         mContext = context;
         this.version = version;
-    };
+    }
 
     @Override
     //创建数据表
@@ -95,16 +97,32 @@ public class Dao extends SQLiteOpenHelper {
         db.insert(RawDataTableName,null,contentValues);
     }
 
+    //插入原始数据
+    public void insertRawData_2(ArrayList<double[]> valuesList,int k){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String RawDataTableName = "RawData_" + k;
+
+        for (int i = 0; i < valuesList.size(); i++)
+        {
+            double[] row = valuesList.get(i);
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("x",row[0]);
+            contentValues.put("y",row[1]);
+            contentValues.put("z",row[2]);
+            db.insert(RawDataTableName,null,contentValues);
+        }
+    }
+
     //插入归一化后的数据
     public void insertNormalData(double[][] values,int k){
         SQLiteDatabase db = this.getWritableDatabase();
-
+        String NormalDataTableName = "NormalData_" + k;
         for (int i = 0; i < values.length; i++ ) {
             ContentValues contentValues = new ContentValues();
             contentValues.put("x", values[i][0]);
             contentValues.put("y", values[i][1]);
             contentValues.put("z", values[i][2]);
-            String NormalDataTableName = "NormalData_" + k;
+
             db.insert(NormalDataTableName,null,contentValues);
         }
 
@@ -172,5 +190,41 @@ public class Dao extends SQLiteOpenHelper {
         }
         cursor.close();
         return valueArry;
+    }
+
+    public void updateRawTable(Matrix updateRawMatrix, int updateTableIndex){
+        ++updateTableIndex;
+        //清空对应表格
+        String rawDataTableName = "RawData_" + updateTableIndex;
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        try{
+            db.execSQL("drop table "+ rawDataTableName);
+            db.execSQL("create table "+rawDataTableName+"("
+                    + "id integer primary key autoincrement, "
+                    + "x double, "
+                    + "y double, "
+                    + "z double "
+                    + ")");
+
+            //插入新数据
+            double[][] values = updateRawMatrix.getArray();
+            for (int i = 0; i < updateRawMatrix.getRowDimension(); i++)
+            {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("x",values[i][0]);
+                contentValues.put("y",values[i][1]);
+                contentValues.put("z",values[i][2]);
+                Log.i("data",Double.toString(values[i][0]));
+                db.insert(rawDataTableName,null,contentValues);
+
+            }
+            db.setTransactionSuccessful();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            db.endTransaction();
+            Log.i("delete",rawDataTableName);
+        }
     }
 }

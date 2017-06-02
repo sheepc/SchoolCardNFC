@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SqLiteTest</string>
+    <string name="app_name">手势认证</string>
     <string name="tip">加速度值(X,Y,Z)</string>
     <string name="delBtnText">清空数据</string>
     <string name="testBtn">数据查看</string>
@@ -7,4 +7,8 @@
     <string name="stopBtn">停止捕获数据</string>
     <string name="test">测试</string>
     <string name="captureBtn2">捕获数据2</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="judgeBtn">判定按钮</string>
+    <string name="capBtnOff">停止捕捉数据</string>
+    <string name="capBtnOn">开始捕捉数据</string>
 </resources>
