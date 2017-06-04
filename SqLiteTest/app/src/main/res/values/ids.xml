@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <item name="testBtn" type="id">testBtn</item>
-    <item name="testButton" type="id">testButton</item>
-    <item name="toggleButton" type="id">toggleButton</item>
-</resources>
