@@ -10,8 +10,12 @@
           <option name="url" value="https://github.com/sheepc/HandSafe.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/sheepc/SchoolCardNFC.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
-    <option name="cloneParentDir" value="D:\Android_Code\SqLiteTest" />
+    <option name="cloneParentDir" value="D:\Android_Code\SchoolCardNFC" />
   </component>
 </application>
