@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tip">加速度值(X,Y,Z)</string>
+</resources>
